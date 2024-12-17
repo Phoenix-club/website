@@ -1,0 +1,9 @@
+db.sqlite3
+
+members/__pycache__
+members/migrations
+
+users/__pycache__
+users/migrations
+
+website/__pycache__
