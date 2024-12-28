@@ -6,7 +6,12 @@ from django.db.models.signals import pre_save,post_save
 from django.dispatch import receiver
 from django.db.models import F
 from django.utils import timezone
-@login_required
+
+class EventImage(models.Model):
+    image = models.ImageField(upload_to = 'EventImage/')
+    def __str__(self):
+        return self.image.name
+
 class Events(models.Model):
     Event_Types = [
             ('individiual','Individual'),
@@ -23,7 +28,7 @@ class Events(models.Model):
     event_type = models.CharField(max_length =15,choices=Event_Types,default ='individiual')
     fees = models.PositiveIntegerField(blank=True,null=True) #PERparticipation 
     poster = models.ImageField(upload_to='image_poster/',null=True,blank=True)
-    images = models.ManyToManyField('EventImage/', blank=True)
+    images = models.ManyToManyField(EventImage, blank=True,related_name="events")
 
 
 
@@ -47,7 +52,7 @@ class Registration(models.Model):
     year = models.CharField(max_length=50, null=True, blank=True)
     event = models.ForeignKey(Events, on_delete=models.CASCADE, related_name='registrations', db_index=True)
     team_name = models.CharField(max_length=255, blank=True, null=True)
-    payment = models.ImageField(upload_to='payment_screenshots/', null=True, blank=True)
+    payment_screenshot = models.ImageField(upload_to='payment_screenshots/', null=True, blank=True)
     
 
     def clean(self):
@@ -79,6 +84,7 @@ class TeamMember(models.Model):
 def increment_registration_count(sender, instance, created, **kwargs):
     if created:
         event = instance.event
+        print(f"Payment Screenshot: {instance.payment_screenshot}")
         if event.paid and not instance.payment_screenshot:
             raise ValidationError("Payment screenshot is required for paid events.")
         if event.current_registration < event.event_capacity:

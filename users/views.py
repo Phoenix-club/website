@@ -1,11 +1,12 @@
 from django.shortcuts import render 
 from django.http import HttpResponse
-from .serializers import EventSerializer,RegistrationSerializer
+from .serializers import *
 from rest_framework import generics
 from .models import * 
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 
 def landing(request):
     return HttpResponse("landing.html")
@@ -19,31 +20,31 @@ class EventListView(generics.ListAPIView):
 
 
 class RegistrationView(generics.CreateAPIView):
-    queryset = Registration.objects.all();
+    queryset = Registration.objects.all()
     serializer_class = RegistrationSerializer
     permission_classes = [AllowAny]
 
-    def create(self,request,*args):
-        payload=request.data
-        registrant=payload['registrant']
-        registrant_email=payload['registrant_email']   
-        registrant_phone=payload['registrant_phone']   
-        branch=payload['branch']   
-        year=payload['year']   
-        event=payload['event'] 
-        team_name=payload['team_name']
+    def create(self, request, *args, **kwargs):
         try:
-            event = Events.objects.get(id=event)
-            Registration.objects.create(registrant=registrant,registrant_email=registrant_email,registrant_phone=registrant_phone,branch=branch,year=year,event=event,team_name=team_name)
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            print(request.FILES)
+
+
             return Response(
-                {
-                    "message":"Created Successfully",
-                },
+                {"message": "Registration created successfully."},
                 status=status.HTTP_201_CREATED,
+            )
+
+        except serializers.ValidationError as e:
+            return Response(
+                {"errors": e.detail},
+                status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
             return Response(
-                {
-                    "message":"Something Went Wrong",
-                }
+                {"message": f"An error occurred: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
