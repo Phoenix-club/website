@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-#z)b_pvo2q@+qps5*fl*gbi=h2+)9c&vcjmfaomhol^!f#+r#s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['vast-civil-fawn.ngrok-free.app','localhost','127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,9 +41,11 @@ INSTALLED_APPS = [
     'users',
     'members',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,10 +53,42 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    ]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "https://vast-civil-fawn.ngrok-free.app",
+    "https://allowing-utterly-hamster.ngrok-free.app",
+
+]
+ROOT_URLCONF = 'website.urls'
+CORS_ALLOWED_ORIGINS = [
+    
+    "https://vast-civil-fawn.ngrok-free.app",
+    "https://allowing-utterly-hamster.ngrok-free.app",
 ]
 
-ROOT_URLCONF = 'website.urls'
-
+CORS_ALLOW_CREDENTIALS =True
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'x-csrfoken',
+    'dnt',
+    'origin',
+    'user-agent',
+    'content-type',
+    'x-requested-with',
+    'ngrok-skip-browser-warning',
+]
+CORS_EXPOSE_HEADERS = ['X-CSRFToken','Content-Type']
+CORS_ALLOW_METHODS = [  # Allow specific HTTP methods
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',  # Required for preflight requests
+]
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
