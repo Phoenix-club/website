@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>{{ event.name }}</h2>
+    <p><strong>Date:</strong> {{ event.date }}</p>
+    <p><strong>Type:</strong> {{ event.event_type }}</p>
+
+    <h3>Registrations</h3>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Registrant</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Team Name</th>
+                <th>Team Members</th>
+                <th>Payment Screenshot</th>
+                <th>Approval</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reg in registration_with_team %}
+            <tr>
+                <td>{{ reg.registration.registrant }}</td>
+                <td>{{ reg.registration.registrant_email }}</td>
+                <td>{{ reg.registration.registrant_phone }}</td>
+                <td>{{ reg.registration.team_name|default:"N/A" }}</td>
+                <td>
+                    {% if reg.team_members %}
+                        <ul>
+                        {% for member in reg.team_members %}
+                            <li>{{ member.name }} ({{ member.email }}, {{ member.phone }})</li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        None
+                    {% endif %}
+                </td>
+                <td>
+                    {% if reg.registration.payment_screenshot %}
+                        <a href="{{ reg.registration.payment_screenshot.url }}" target="_blank">
+                            <img src="{{ reg.registration.payment_screenshot.url }}" alt="Payment Screenshot" width="100">
+                        </a>
+                    {% else %}
+                        No Screenshot
+                    {% endif %}
+                </td>
+                <td>
+                    <form method="post" action="{% url 'approve_registration' reg.registration.pk %}">
+                        {% csrf_token %}
+                        <select name="approval" class="form-select">
+                            <option value="approve" {% if reg.registration.approval == True %}selected{% endif %}>Approve</option>
+                            <option value="reject" {% if reg.registration.approval == False %}selected{% endif %}>Reject</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-success mt-1">Save</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center">No registrations yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'event_list' %}" class="btn btn-secondary">Back to Events</a>
+</div>
+{% endblock %}
+

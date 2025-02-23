@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Revenue Report</h2>
+    <p><strong>Total Collection:</strong> ₹{{ collection }}</p>
+    <a href="{% url 'event_list' %}" class="btn btn-secondary">Back to Events</a>
+</div>
+{% endblock %}
+

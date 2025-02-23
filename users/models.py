@@ -53,6 +53,7 @@ class Registration(models.Model):
     event = models.ForeignKey(Events, on_delete=models.CASCADE, related_name='registrations', db_index=True)
     team_name = models.CharField(max_length=255, blank=True, null=True)
     payment_screenshot = models.ImageField(upload_to='payment_screenshots/', null=True, blank=True)
+    approval = models.BooleanField(null = True,blank =True)
     
 
     def clean(self):
