@@ -5,6 +5,13 @@ from django.http import HttpResponse
 import openpyxl
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import user_passes_test
+
+
+def superuser_required(user):
+    return user.is_superuser
+
+@user_passes_test(superuser_required)
 def add_event(request):
     if request.method == "POST":
         form = EventForm(request.POST, request.FILES)
@@ -15,12 +22,12 @@ def add_event(request):
         form = EventForm()
     return render(request, 'add_event.html', {'form': form})
 
-
+@user_passes_test(superuser_required)
 def event_list(request):
     events = Events.objects.all().order_by('-date')
     return render(request, 'event_list.html', {'events': events})
 
-
+@user_passes_test(superuser_required)
 def event_detail(request, event_pk):
     event = get_object_or_404(Events, pk=event_pk)
     registrations = Registration.objects.filter(event=event)
@@ -37,6 +44,7 @@ def event_detail(request, event_pk):
         'event': event,
         'registration_with_team': registration_with_team
     })
+@user_passes_test(superuser_required)
 def revenue_gen(request,pk):
     event = get_object_or_404(Events,pk=pk)
     if event.paid is False :
@@ -49,7 +57,7 @@ def revenue_gen(request,pk):
     return render(request, "revenue.html",{"collection":collection})
 
 from django.utils.timezone import is_aware, make_naive
-
+@user_passes_test(superuser_required)
 def export_event_registrations(request, event_pk):
     event = get_object_or_404(Events, pk=event_pk)
 
@@ -93,6 +101,7 @@ def export_event_registrations(request, event_pk):
     workbook.save(response)
     
     return response
+@user_passes_test(superuser_required)
 @require_POST
 def approve_registration(request, registration_pk):
     registration = get_object_or_404(Registration, pk=registration_pk)
