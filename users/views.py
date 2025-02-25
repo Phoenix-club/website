@@ -1,8 +1,8 @@
-from django.shortcuts import render 
+from django.shortcuts import render
 from django.http import HttpResponse
 from .serializers import *
 from rest_framework import generics
-from .models import * 
+from .models import *
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,18 +11,23 @@ from django.middleware.csrf import get_token
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+
+
 def landing(request):
     return HttpResponse("landing.html")
 
- 
 
 class EventListView(generics.ListAPIView):
     queryset = Events.objects.all()
     serializer_class = EventSerializer
     permission_classes = [AllowAny]
+
+
 import logging
 
-logger = logging.getLogger(__name__) 
+logger = logging.getLogger(__name__)
+
+
 @method_decorator(csrf_exempt, name="dispatch")
 class RegistrationView(generics.CreateAPIView):
     queryset = Registration.objects.all()
@@ -43,7 +48,7 @@ class RegistrationView(generics.CreateAPIView):
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            
+
             # Log uploaded files for debugging
             if request.FILES:
                 logger.info(f"Uploaded Files: {request.FILES}")
@@ -66,5 +71,6 @@ class RegistrationView(generics.CreateAPIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
+
 def csrf_token_view(request):
-    return JsonResponse({'csrfToken': get_token(request)})
+    return JsonResponse({"csrfToken": get_token(request)})
