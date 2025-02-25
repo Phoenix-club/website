@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-#z)b_pvo2q@+qps5*fl*gbi=h2+)9c&vcjmfaomhol^!f#+r#s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["phoenixkkw.pythonanywhere.com","grand-meringue-8bcf03.netlify.app"]
+ALLOWED_HOSTS = ["phoenixkkw.pythonanywhere.com","grand-meringue-8bcf03.netlify.app","phoenix-club-kkw.netlify.app"]
 
 
 # Application definition
@@ -58,11 +58,13 @@ CSRF_TRUSTED_ORIGINS = [
     "https://phoenixkkw.pythonanywhere.com",
     "https://vast-civil-fawn.ngrok-free.app",
     "https://grand-meringue-8bcf03.netlify.app",
+    "https://phoenix-club-kkw.netlify.app",
 ]
 ROOT_URLCONF = "website.urls"
 CORS_ALLOWED_ORIGINS = [
     "https://phoenixkkw.pythonanywhere.com",
     "https://grand-meringue-8bcf03.netlify.app",
+    "https://phoenix-club-kkw.netlify.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
