@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-#z)b_pvo2q@+qps5*fl*gbi=h2+)9c&vcjmfaomhol^!f#+r#s"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["phoenixkkw.pythonanywhere.com"]
+ALLOWED_HOSTS = ["phoenixkkw.pythonanywhere.com","grand-meringue-8bcf03.netlify.app"]
 
 
 # Application definition
@@ -57,12 +57,12 @@ MIDDLEWARE = [
 CSRF_TRUSTED_ORIGINS = [
     "https://phoenixkkw.pythonanywhere.com",
     "https://vast-civil-fawn.ngrok-free.app",
-    "https://allowing-utterly-hamster.ngrok-free.app",
+    "grand-meringue-8bcf03.netlify.app",
 ]
 ROOT_URLCONF = "website.urls"
 CORS_ALLOWED_ORIGINS = [
-    "https://vast-civil-fawn.ngrok-free.app",
-    "https://allowing-utterly-hamster.ngrok-free.app",
+    "https://phoenixkkw.pythonanywhere.com",
+    "grand-meringue-8bcf03.netlify.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
