@@ -57,12 +57,12 @@ MIDDLEWARE = [
 CSRF_TRUSTED_ORIGINS = [
     "https://phoenixkkw.pythonanywhere.com",
     "https://vast-civil-fawn.ngrok-free.app",
-    "grand-meringue-8bcf03.netlify.app",
+    "https://grand-meringue-8bcf03.netlify.app",
 ]
 ROOT_URLCONF = "website.urls"
 CORS_ALLOWED_ORIGINS = [
     "https://phoenixkkw.pythonanywhere.com",
-    "grand-meringue-8bcf03.netlify.app",
+    "https://grand-meringue-8bcf03.netlify.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
