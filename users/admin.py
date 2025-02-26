@@ -30,5 +30,3 @@ class TeamMemberAdmin(admin.ModelAdmin):
     search_fields = ["name", "email"]
     ordering = ["name"]
 
-admin.site.register(Events)
-admin.site.register(Registration)
