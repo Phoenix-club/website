@@ -116,4 +116,18 @@ def approve_registration(request, registration_pk):
 
     registration.save()
     return redirect('event_detail', event_pk=registration.event.pk)
-       
+ 
+@user_passes_test(superuser_required)
+def update_event(request, event_pk):
+    event = get_object_or_404(Events, pk=event_pk)
+
+    if request.method == "POST":
+        form = EventForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('event_detail', event_pk=event.pk)  # Redirect to the event detail page
+    else:
+        form = EventForm(instance=event)
+
+    return render(request, 'update_event.html', {'form': form, 'event': event})
+
