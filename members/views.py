@@ -57,7 +57,7 @@ def revenue_gen(request,pk):
     return render(request, "revenue.html",{"collection":collection})
 
 from django.utils.timezone import is_aware, make_naive
-@user_passes_test(superuser_required)
+"""@user_passes_test(superuser_required)
 def export_event_registrations(request, event_pk):
     event = get_object_or_404(Events, pk=event_pk)
 
@@ -100,7 +100,71 @@ def export_event_registrations(request, event_pk):
     response["Content-Disposition"] = f'attachment; filename="registrations_{event.name}.xlsx"'
     workbook.save(response)
     
+    return response"""
+@user_passes_test(superuser_required)
+def export_event_registrations(request, event_pk):
+    event = get_object_or_404(Events, pk=event_pk)
+
+    # Create Excel workbook and sheet
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    sheet.title = f"Registrations - {event.name}"
+
+    # Define column headers (including team members)
+    headers = [
+        "Registrant Name", "Email", "Phone", "Team Name", "Registration Time",
+        "Payment Screenshot", "Approval", "Team Member Name", "Team Member Email", "Team Member Phone"
+    ]
+    sheet.append(headers)
+
+    # Fetch all registrations for the event
+    registrations = Registration.objects.filter(event=event)
+    
+    for registration in registrations:
+        # Convert timezone-aware datetime to naive datetime
+        reg_time = registration.registration_time
+        if is_aware(reg_time):
+            reg_time = make_naive(reg_time)
+
+        # If there are no team members, add a single row for the registrant
+        if not registration.team_members.exists():
+            sheet.append([
+                registration.registrant,
+                registration.registrant_email,
+                registration.registrant_phone,
+                registration.team_name or "N/A",
+                reg_time.strftime('%Y-%m-%d %H:%M:%S'),
+                "Yes" if registration.payment_screenshot else "No",
+                "Yes" if registration.approval else "No",
+                "N/A",  # No team member name
+                "N/A",  # No team member email
+                "N/A"   # No team member phone
+            ])
+        else:
+            # Add a row for each team member
+            for member in registration.team_members.all():
+                sheet.append([
+                    registration.registrant,
+                    registration.registrant_email,
+                    registration.registrant_phone,
+                    registration.team_name or "N/A",
+                    reg_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    "Yes" if registration.payment_screenshot else "No",
+                    "Yes" if registration.approval else "No",
+                    member.name,
+                    member.email,
+                    member.phone or "N/A"
+                ])
+
+    # Prepare response with the Excel file
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    response["Content-Disposition"] = f'attachment; filename="registrations_{event.name}.xlsx"'
+    workbook.save(response)
+    
     return response
+
 @user_passes_test(superuser_required)
 @require_POST
 def approve_registration(request, registration_pk):
